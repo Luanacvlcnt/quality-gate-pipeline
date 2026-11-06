@@ -1,6 +1,6 @@
 # Quality Gate Pipeline
 
-> Projeto focado em **DevOps voltado para qualidade**: um pipeline de CI/CD em que cada etapa funciona como um *quality gate*, capaz de impedir que código com problemas chegue à produção.
+> Projeto é focado em **DevOps voltado para qualidade**: um pipeline de CI/CD em que cada etapa funciona como um *quality gate*, capaz de impedir que código com problemas chegue à produção.
 
 ![status](https://img.shields.io/badge/status-em%20constru%C3%A7%C3%A3o-yellow)
 
@@ -29,7 +29,40 @@ A aplicação em si é simples de propósito: **o foco do projeto é o pipeline,
 | 8 | Teste de carga | k6 | o p95 de latência passa do limite | ⏳ |
 | 9 | Smoke test pós-deploy | _a definir_ | o serviço não responde após o deploy | ⏳ |
 
-Detalhes de cada gate em [`docs/pipeline.md`](docs/pipeline.md).
+Cada gate é um job do GitHub Actions. Se um gate falha, o PR não pode ser mergeado (via *branch protection* na `main`).
+
+### Fluxo
+
+```
+secret-scan ─┬─> lint ─> unit-tests ─┬─> sonarcloud
+             │                       └─> integration-tests ─┐
+             └─> sast ──────────────────────────────────────┴─> container-scan ─> load-test ─> deploy ─> smoke-test
+```
+
+### Critérios de aprovação
+
+- **Secrets:** nenhum secret no histórico (um secret vazado continua no Git mesmo depois de apagado)
+- **Lint:** zero violações (Java: Checkstyle ou Spotless)
+- **Testes unitários:** todos passam e cobertura de linhas ≥ 80% (Java: JUnit 5 + JaCoCo)
+- **SonarCloud:** quality gate padrão aprovado (sem bugs/vulnerabilidades novas, duplicação baixa)
+- **Integração:** testes passam contra um Postgres real via Testcontainers
+- **SAST:** nenhum achado do Semgrep com severidade ERROR
+- **Container:** nenhuma CVE CRITICAL ou HIGH com correção disponível
+- **Carga:** p95 < 300 ms e taxa de erro < 1% ([`tests/load/smoke.js`](tests/load/smoke.js))
+- **Smoke test:** `/health` responde 200 após o deploy; se falhar, rollback
+
+## API
+
+Um CRUD simples de tarefas, persistido em Postgres. A linguagem ainda está em definição ([ADR 0002](docs/adr/0002-linguagem-da-api.md)).
+
+| Método | Rota | Descrição |
+|--------|------|-----------|
+| GET | `/health` | Health check (usado pelo smoke test) |
+| GET | `/tasks` | Lista tarefas |
+| GET | `/tasks/{id}` | Busca uma tarefa |
+| POST | `/tasks` | Cria uma tarefa |
+| PUT | `/tasks/{id}` | Atualiza uma tarefa |
+| DELETE | `/tasks/{id}` | Remove uma tarefa |
 
 ## Estrutura do repositório
 
@@ -40,9 +73,7 @@ Detalhes de cada gate em [`docs/pipeline.md`](docs/pipeline.md).
 │   ├── dependabot.yml            # Atualização automática de dependências
 │   └── pull_request_template.md  # Checklist de qualidade para PRs
 ├── app/                          # Código da API (linguagem a definir)
-├── docs/
-│   ├── adr/                      # Registros de decisões de arquitetura
-│   └── pipeline.md               # Descrição de cada quality gate
+├── docs/adr/                     # Registros de decisões de arquitetura
 ├── tests/
 │   └── load/                     # Testes de carga com k6
 ├── docker-compose.yml            # Dependências locais (Postgres)
