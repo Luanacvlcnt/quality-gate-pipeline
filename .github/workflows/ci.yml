@@ -21,7 +21,7 @@ jobs:
     name: Gate 1 · Secret scan
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
@@ -40,7 +40,7 @@ jobs:
   #   runs-on: ubuntu-latest
   #   needs: secret-scan
   #   steps:
-  #     - uses: actions/checkout@v4
+  #     - uses: actions/checkout@v7
   #     # TODO: configurar ambiente da linguagem e rodar o linter
 
   # unit-tests:
@@ -48,7 +48,7 @@ jobs:
   #   runs-on: ubuntu-latest
   #   needs: lint
   #   steps:
-  #     - uses: actions/checkout@v4
+  #     - uses: actions/checkout@v7
   #     # TODO: rodar testes e falhar se cobertura < 80%
 
   # sonarcloud:
@@ -56,7 +56,7 @@ jobs:
   #   runs-on: ubuntu-latest
   #   needs: unit-tests
   #   steps:
-  #     - uses: actions/checkout@v4
+  #     - uses: actions/checkout@v7
   #       with:
   #         fetch-depth: 0
   #     # TODO: análise + aguardar resultado do quality gate
@@ -66,7 +66,7 @@ jobs:
   #   runs-on: ubuntu-latest
   #   needs: unit-tests
   #   steps:
-  #     - uses: actions/checkout@v4
+  #     - uses: actions/checkout@v7
   #     # TODO: testes com Testcontainers
 
   # sast:
@@ -74,7 +74,7 @@ jobs:
   #   runs-on: ubuntu-latest
   #   needs: secret-scan
   #   steps:
-  #     - uses: actions/checkout@v4
+  #     - uses: actions/checkout@v7
   #     # TODO: semgrep scan --error
 
   # container-scan:
@@ -82,7 +82,7 @@ jobs:
   #   runs-on: ubuntu-latest
   #   needs: [integration-tests, sast]
   #   steps:
-  #     - uses: actions/checkout@v4
+  #     - uses: actions/checkout@v7
   #     # TODO: build da imagem + trivy com --exit-code 1 para CRITICAL,HIGH
 
   # load-test:
@@ -90,5 +90,5 @@ jobs:
   #   runs-on: ubuntu-latest
   #   needs: container-scan
   #   steps:
-  #     - uses: actions/checkout@v4
+  #     - uses: actions/checkout@v7
   #     # TODO: subir a aplicação e rodar tests/load/smoke.js
