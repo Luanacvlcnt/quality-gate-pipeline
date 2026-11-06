@@ -1,6 +1,6 @@
 # Quality Gate Pipeline
 
-> Projeto é focado em **DevOps voltado para qualidade**: um pipeline de CI/CD em que cada etapa funciona como um *quality gate*, capaz de impedir que código com problemas chegue à produção.
+> Projeto focado em **DevOps voltado para qualidade**: um pipeline de CI/CD em que cada etapa funciona como um *quality gate*, capaz de impedir que código com problemas chegue à produção.
 
 ![status](https://img.shields.io/badge/status-em%20constru%C3%A7%C3%A3o-yellow)
 
