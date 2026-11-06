@@ -1,5 +1,5 @@
 # ---- Estágio 1: build (JDK completo + Maven) ----
-FROM eclipse-temurin:17-jdk AS build
+FROM eclipse-temurin:25-jdk AS build
 WORKDIR /src
 
 # Baixa as dependências antes de copiar o código: enquanto o pom.xml não mudar,
@@ -12,7 +12,7 @@ COPY src src
 RUN ./mvnw -B -q package -DskipTests
 
 # ---- Estágio 2: runtime (só a JRE + o .jar, imagem bem menor) ----
-FROM eclipse-temurin:17-jre-alpine
+FROM eclipse-temurin:24-jre-alpine
 WORKDIR /app
 
 # Não roda como root dentro do container
