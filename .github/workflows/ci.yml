@@ -1,0 +1,94 @@
+name: CI - Quality Gates
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # ---------------------------------------------------------------
+  # Gate 1 - Detecção de secrets (ativo)
+  # ---------------------------------------------------------------
+  secret-scan:
+    name: Gate 1 · Secret scan
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Gitleaks
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  # ---------------------------------------------------------------
+  # Próximos gates: descomente conforme cada fase for implementada.
+  # Veja o README.md para o detalhamento de cada um.
+  # ---------------------------------------------------------------
+
+  # lint:
+  #   name: Gate 2 · Lint
+  #   runs-on: ubuntu-latest
+  #   needs: secret-scan
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     # TODO: configurar ambiente da linguagem e rodar o linter
+
+  # unit-tests:
+  #   name: Gate 3 · Testes unitários + cobertura
+  #   runs-on: ubuntu-latest
+  #   needs: lint
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     # TODO: rodar testes e falhar se cobertura < 80%
+
+  # sonarcloud:
+  #   name: Gate 4 · SonarCloud
+  #   runs-on: ubuntu-latest
+  #   needs: unit-tests
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #       with:
+  #         fetch-depth: 0
+  #     # TODO: análise + aguardar resultado do quality gate
+
+  # integration-tests:
+  #   name: Gate 5 · Testes de integração
+  #   runs-on: ubuntu-latest
+  #   needs: unit-tests
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     # TODO: testes com Testcontainers
+
+  # sast:
+  #   name: Gate 6 · SAST (Semgrep)
+  #   runs-on: ubuntu-latest
+  #   needs: secret-scan
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     # TODO: semgrep scan --error
+
+  # container-scan:
+  #   name: Gate 7 · Scan de container (Trivy)
+  #   runs-on: ubuntu-latest
+  #   needs: [integration-tests, sast]
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     # TODO: build da imagem + trivy com --exit-code 1 para CRITICAL,HIGH
+
+  # load-test:
+  #   name: Gate 8 · Teste de carga (k6)
+  #   runs-on: ubuntu-latest
+  #   needs: container-scan
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     # TODO: subir a aplicação e rodar tests/load/smoke.js
