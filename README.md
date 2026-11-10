@@ -82,6 +82,12 @@ Exemplo de corpo para `POST` e `PUT` (`description` e `done` são opcionais):
 
 Respostas: `201` ao criar, `204` ao remover, `400` se o título estiver vazio e `404` se o id não existir.
 
+## Quadro de tarefas (front-end)
+
+Um quadro estilo kanban com duas colunas, **A fazer** e **Feito**, disponível em `http://localhost:8080/`. Permite criar, excluir e mover tarefas entre as colunas (arrastando ou pelos botões).
+
+É um único arquivo, [`app/src/main/resources/static/index.html`](app/src/main/resources/static/index.html), com HTML, CSS e JavaScript puro, sem bibliotecas nem etapa de build. O próprio Spring Boot serve o arquivo, então o front usa a API no mesmo endereço, sem CORS e sem container extra.
+
 ## Estrutura do repositório
 
 ```
@@ -90,7 +96,7 @@ Respostas: `201` ao criar, `204` ao remover, `400` se o título estiver vazio e 
 │   ├── workflows/ci.yml          # Pipeline de CI com os quality gates
 │   ├── dependabot.yml            # Atualização automática de dependências
 │   └── pull_request_template.md  # Checklist de qualidade para PRs
-├── app/                          # API Spring Boot (pom.xml, Dockerfile, src/)
+├── app/                          # API Spring Boot + quadro em static/ (pom.xml, Dockerfile, src/)
 ├── docs/adr/                     # Registros de decisões de arquitetura
 ├── tests/
 │   └── load/                     # Testes de carga com k6
@@ -107,7 +113,7 @@ cp .env.example .env
 
 # 2. Suba tudo (Postgres + API) com Docker
 docker compose up -d --build
-curl localhost:8080/health
+curl localhost:8080/health   # depois abra http://localhost:8080/ no navegador
 ```
 
 Para desenvolver sem rebuildar a imagem a cada mudança, suba só o banco e rode a API pelo Maven Wrapper (precisa do Java 25):
