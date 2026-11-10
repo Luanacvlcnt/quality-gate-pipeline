@@ -23,7 +23,7 @@ A API é simples (um CRUD com Postgres); o foco do projeto é o pipeline. A ling
 
 ## Decisão
 
-Java 17 + Spring Boot 4, com **Maven** como ferramenta de build (via Maven Wrapper, `./mvnw`, para que ninguém precise instalar o Maven).
+Java 25 (LTS) + Spring Boot 4, com **Maven** como ferramenta de build (via Maven Wrapper, `./mvnw`, para que ninguém precise instalar o Maven).
 
 Maven foi escolhido por ser declarativo (`pom.xml`), o mais comum em projetos Spring e o mais documentado nos plugins de qualidade (JaCoCo, Checkstyle, Sonar).
 
@@ -31,4 +31,4 @@ Maven foi escolhido por ser declarativo (`pom.xml`), o mais comum em projetos Sp
 
 - Os gates 2 e 3 vão usar Checkstyle/Spotless e JUnit 5 + JaCoCo.
 - O Dependabot monitora o `pom.xml`.
-- A imagem final usa só a JRE (`eclipse-temurin:17-jre-alpine`), sem Maven nem JDK.
+- A imagem final usa só a JRE (`eclipse-temurin:25-jre-alpine`), sem Maven nem JDK.
